@@ -220,7 +220,7 @@ def transaction_history_view(request, card_id=None):
     target_card = None
 
     if card_id:
-        # Если передан card_id, проверяем принадлежность карты пользователю
+
         target_card = get_object_or_404(Card, id=card_id, user=request.user)
         
         if filter_type == 'sent':
@@ -228,7 +228,7 @@ def transaction_history_view(request, card_id=None):
         elif filter_type == 'received':
             transactions = Transaction.objects.filter(to_card=target_card).order_by('-id')
         else:
-            # Ищем все, где карта участвовала, и сортируем по ID в обратном порядке
+
             sent_list = list(Transaction.objects.filter(from_card=target_card))
             received_list = list(Transaction.objects.filter(to_card=target_card))
             # Объединяем списки и удаляем возможные дубликаты через set, затем сортируем
@@ -236,7 +236,6 @@ def transaction_history_view(request, card_id=None):
             transactions = sorted(combined, key=lambda x: x.id, reverse=True)
             
     else:
-        # Общая история транзакций пользователя
         if filter_type == 'sent':
             transactions = Transaction.objects.filter(sender=request.user).order_by('-id')
         elif filter_type == 'received':
