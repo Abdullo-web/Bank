@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перевод средств | Apex Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bank: {
+                            dark: '#0A192F',
+                            card: '#112240',
+                            accent: '#10B981',
+                            gold: '#D4AF37',
+                            border: '#233554'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bank-dark text-slate-100 min-h-screen flex flex-col justify-between font-sans selection:bg-bank-accent selection:text-white">
+
+    <header class="w-full py-4 px-6 border-b border-bank-border/50 flex justify-between items-center bg-bank-dark/80 backdrop-blur-md">
+        <div class="flex items-center space-x-2">
+            <svg class="w-7 h-7 text-bank-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span class="font-bold tracking-wider text-lg text-white">APEX <span class="text-bank-accent font-light">BANK</span></span>
+        </div>
+        <div class="flex items-center space-x-1 text-xs text-slate-400 bg-bank-card px-3 py-1.5 rounded-full border border-bank-border">
+            <span class="w-2 h-2 rounded-full bg-bank-accent animate-pulse"></span>
+            <span>Безопасный перевод</span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md bg-bank-card border border-bank-border rounded-2xl shadow-2xl p-8 relative overflow-hidden">
+            
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-bank-accent via-teal-400 to-blue-500"></div>
+
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-white tracking-tight">Перевод средств</h1>
+                <p class="text-xs text-slate-400 mt-1">Мгновенный перевод на карту или счет</p>
+            </div>
+
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-lg">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="space-y-4">
+                    {% for field in form %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-xs font-medium text-slate-300 mb-1">
+                                {{ field.label }}
+                            </label>
+                            
+                            <!-- Стилизация полей формы (input, select, textarea) через обертку -->
+                            <div class="[&>input]:w-full [&>input]:bg-slate-900/80 [&>input]:border [&>input]:border-bank-border [&>input]:rounded-lg [&>input]:px-4 [&>input]:py-2.5 [&>input]:text-sm [&>input]:text-white [&>input]:placeholder-slate-500 [&>input]:focus:outline-none [&>input]:focus:border-bank-accent [&>input]:focus:ring-1 [&>input]:focus:ring-bank-accent [&>input]:transition-all [&>select]:w-full [&>select]:bg-slate-900/80 [&>select]:border [&>select]:border-bank-border [&>select]:rounded-lg [&>select]:px-4 [&>select]:py-2.5 [&>select]:text-sm [&>select]:text-white [&>select]:focus:outline-none [&>select]:focus:border-bank-accent [&>select]:focus:ring-1 [&>select]:focus:ring-bank-accent [&>textarea]:w-full [&>textarea]:bg-slate-900/80 [&>textarea]:border [&>textarea]:border-bank-border [&>textarea]:rounded-lg [&>textarea]:px-4 [&>textarea]:py-2.5 [&>textarea]:text-sm [&>textarea]:text-white [&>textarea]:focus:outline-none [&>textarea]:focus:border-bank-accent [&>textarea]:focus:ring-1 [&>textarea]:focus:ring-bank-accent">
+                                {{ field }}
+                            </div>
+
+                            {% if field.errors %}
+                                <div class="text-xs text-red-400 mt-1 list-disc list-inside">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="w-full mt-6 bg-gradient-to-r from-bank-accent to-emerald-600 text-slate-950 font-bold py-3 px-4 rounded-lg shadow-lg hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center space-x-2">
+                    <span>Перевести</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="{% url 'account' %}" class="text-xs text-slate-400 hover:text-bank-accent transition-colors">
+                    &larr; Назад в личный кабинет
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-bank-border/30">
+        &copy; 2026 Apex Bank Systems. Все права защищены.
+    </footer>
+
+</body>
+</html>
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Money Transfer</title>
+</head>
+<body>
+
+    <h1>Money Transfer</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        {{ form.non_field_errors }}<br>
+
+        {% for field in form %}
+            {{ field.label_tag }}<br>
+            {{ field }}<br>
+            {{ field.errors }}<br><br>
+        {% endfor %}
+
+        <button type="submit">Transfer</button>
+    </form>
+
+    <br>
+    <a href="{% url 'account' %}">Back to Account</a>
+
+</body>
+</html> {% endcomment %}

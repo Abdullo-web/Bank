@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание счёта</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bank: {
+                            dark: '#0A192F',
+                            card: '#112240',
+                            accent: '#10B981',
+                            gold: '#D4AF37',
+                            border: '#233554'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bank-dark text-slate-100 min-h-screen flex flex-col justify-between font-sans selection:bg-bank-accent selection:text-white">
+
+    <header class="w-full py-4 px-6 border-b border-bank-border/50 flex justify-between items-center bg-bank-dark/80 backdrop-blur-md">
+        <div class="flex items-center space-x-2">
+            <svg class="w-7 h-7 text-bank-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span class="font-bold tracking-wider text-lg text-white">APEX <span class="text-bank-accent font-light">BANK</span></span>
+        </div>
+        <div class="flex items-center space-x-1 text-xs text-slate-400 bg-bank-card px-3 py-1.5 rounded-full border border-bank-border">
+            <span class="w-2 h-2 rounded-full bg-bank-accent animate-pulse"></span>
+            <span>256-Bit SSL Secured</span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md bg-bank-card border border-bank-border rounded-2xl shadow-2xl p-8 relative overflow-hidden">
+            
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-bank-accent via-teal-400 to-blue-500"></div>
+
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-white tracking-tight">Заполнение данных банковского счёта</h2>
+                <p class="text-xs text-slate-400 mt-1">Заполните поля для открытия нового счёта</p>
+            </div>
+
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div class="space-y-4 [&>p>label]:block [&>p>label]:text-xs [&>p>label]:font-medium [&>p>label]:text-slate-300 [&>p>label]:mb-1 [&>p>input]:w-full [&>p>input]:bg-slate-900/80 [&>p>input]:border [&>p>input]:border-bank-border [&>p>input]:rounded-lg [&>p>input]:px-4 [&>p>input]:py-2.5 [&>p>input]:text-sm [&>p>input]:text-white [&>p>input]:placeholder-slate-500 [&>p>input]:focus:outline-none [&>p>input]:focus:border-bank-accent [&>p>input]:focus:ring-1 [&>p>input]:focus:ring-bank-accent [&>p>input]:transition-all [&>p>select]:w-full [&>p>select]:bg-slate-900/80 [&>p>select]:border [&>p>select]:border-bank-border [&>p>select]:rounded-lg [&>p>select]:px-4 [&>p>select]:py-2.5 [&>p>select]:text-sm [&>p>select]:text-white [&>p>select]:focus:outline-none [&>p>select]:focus:border-bank-accent [&>p>select]:focus:ring-1 [&>p>select]:focus:ring-bank-accent [&>p>textarea]:w-full [&>p>textarea]:bg-slate-900/80 [&>p>textarea]:border [&>p>textarea]:border-bank-border [&>p>textarea]:rounded-lg [&>p>textarea]:px-4 [&>p>textarea]:py-2.5 [&>p>textarea]:text-sm [&>p>textarea]:text-white [&>p>textarea]:focus:outline-none [&>p>textarea]:focus:border-bank-accent [&>p>textarea]:focus:ring-1 [&>p>textarea]:focus:ring-bank-accent [&>p>ul]:text-xs [&>p>ul]:text-red-400 [&>p>ul]:mt-1 [&>p>ul]:list-disc [&>p>ul]:list-inside">
+                    {{ form.as_p }}
+                </div>
+
+                <button type="submit" class="w-full mt-6 bg-gradient-to-r from-bank-accent to-emerald-600 text-slate-950 font-bold py-3 px-4 rounded-lg shadow-lg hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center space-x-2">
+                    <span>Создать счёт</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-bank-border/30">
+        &copy; 2026 Apex Bank Systems. Все права защищены.
+    </footer>
+
+</body>
+</html>
+{% comment %} <!DOCTYPE html>
+<html>
+<head><title>Создание счёта</title></head>
+<body>
+    <h2>Заполнение данных банковского счёта</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Создать счёт</button>
+    </form>
+</body>
+</html> {% endcomment %}

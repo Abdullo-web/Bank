@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | Apex Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bank: {
+                            dark: '#0A192F',
+                            card: '#112240',
+                            accent: '#10B981',
+                            gold: '#D4AF37',
+                            border: '#233554'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bank-dark text-slate-100 min-h-screen flex flex-col justify-between font-sans selection:bg-bank-accent selection:text-white">
+
+    <header class="w-full py-4 px-6 border-b border-bank-border/50 flex justify-between items-center bg-bank-dark/80 backdrop-blur-md">
+        <div class="flex items-center space-x-2">
+            <svg class="w-7 h-7 text-bank-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span class="font-bold tracking-wider text-lg text-white">APEX <span class="text-bank-accent font-light">BANK</span></span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="hidden sm:flex items-center space-x-1 text-xs text-slate-400 bg-bank-card px-3 py-1.5 rounded-full border border-bank-border">
+                <span class="w-2 h-2 rounded-full bg-bank-accent animate-pulse"></span>
+                <span>Безопасное соединение</span>
+            </div>
+            <form method="post" action="{% url 'logout' %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500/10 hover:bg-red-500/25 text-red-400 border border-red-500/30 text-xs font-semibold py-2 px-3 rounded-lg transition-all cursor-pointer">
+                    Выйти
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 space-y-8">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-bank-card border border-bank-border rounded-2xl p-6 shadow-xl relative overflow-hidden gap-6">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-bank-accent via-teal-400 to-blue-500"></div>
+            
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <h2 class="text-2xl font-bold text-white tracking-tight">{{ account.first_name }} {{ account.last_name }}</h2>
+                    <span class="bg-bank-accent/10 text-bank-accent border border-bank-accent/20 text-xs px-2.5 py-0.5 rounded-full font-medium">Активен</span>
+                </div>
+                <p class="text-xs text-slate-400">Паспорт ID: <span class="text-slate-200 font-mono">{{ account.passport_id }}</span> | Адрес: <span class="text-slate-200">{{ account.address }}</span></p>
+            </div>
+
+            <div class="bg-slate-900/80 border border-bank-border rounded-xl px-6 py-4 text-right min-w-[200px]">
+                <p class="text-xs text-slate-400 uppercase tracking-wider font-medium">Основной баланс</p>
+                <p class="text-2xl font-extrabold text-bank-accent mt-0.5">{{ account.balance }} <span class="text-sm font-normal text-slate-400">TJS</span></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="{% url 'card_create' %}" class="bg-bank-card hover:border-bank-accent border border-bank-border p-4 rounded-xl transition-all flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-lg bg-bank-accent/10 flex items-center justify-center text-bank-accent group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white">Новая карта</h3>
+                    <p class="text-xs text-slate-400">Выпустить карту</p>
+                </div>
+            </a>
+
+            <a href="{% url 'transfer' %}" class="bg-bank-card hover:border-bank-accent border border-bank-border p-4 rounded-xl transition-all flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white">Перевод</h3>
+                    <p class="text-xs text-slate-400">Отправить средства</p>
+                </div>
+            </a>
+
+            <a href="{% url 'history' %}" class="bg-bank-card hover:border-bank-accent border border-bank-border p-4 rounded-xl transition-all flex items-center space-x-3 group sm:col-span-2 lg:col-span-2">
+                <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white">История транзакций</h3>
+                    <p class="text-xs text-slate-400">Посмотреть все переводы и платежи</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="bg-bank-card border border-bank-border rounded-2xl p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center border-b border-bank-border pb-4">
+                <h3 class="text-lg font-bold text-white">Ваши банковские карты</h3>
+                <span class="text-xs text-slate-400">Управление картами</span>
+            </div>
+
+            {% if request.user.cards.all %}
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for card in request.user.cards.all %}
+                        <li class="bg-slate-900/90 border border-bank-border hover:border-bank-accent/60 p-5 rounded-xl transition-all flex flex-col justify-between space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs uppercase tracking-wider font-semibold text-bank-accent">{{ card.type }}</span>
+                                    <p class="text-lg font-mono tracking-widest text-white mt-1">{{ card.card_number }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-400">Баланс</span>
+                                    <p class="text-base font-bold text-white">{{ card.balance }} TJS</p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 pt-2 border-t border-bank-border/50">
+                                <a href="{% url 'card_detail' card.id %}" class="flex-1 text-center bg-bank-border/50 hover:bg-bank-border text-slate-200 text-xs font-medium py-2 px-3 rounded-lg transition-all">
+                                    Детали
+                                </a>
+                                <a href="{% url 'card_history' card.id %}" class="flex-1 text-center bg-bank-border/50 hover:bg-bank-border text-slate-200 text-xs font-medium py-2 px-3 rounded-lg transition-all">
+                                    История
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="text-center py-12 text-slate-400 bg-slate-900/40 rounded-xl border border-dashed border-bank-border">
+                    <p class="text-sm">У вас пока нет активных карт.</p>
+                    <a href="{% url 'card_create' %}" class="inline-block mt-3 text-xs text-bank-accent font-semibold hover:underline">Создать первую карту &rarr;</a>
+                </div>
+            {% endif %}
+        </div>
+
+    </main>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-bank-border/30">
+        &copy; 2026 Apex Bank Systems. Все права защищены.
+    </footer>
+
+</body>
+</html>
+{% comment %} <!DOCTYPE html>
+<html>
+<head><title>Личный кабинет</title></head>
+<body>
+    <h2>Личный кабинет</h2>
+    <p><strong>Имя:</strong> {{ account.first_name }}</p>
+    <p><strong>Фамилия:</strong> {{ account.last_name }}</p>
+    <p><strong>Адрес:</strong> {{ account.address }}</p>
+    <p><strong>Паспорт ID:</strong> {{ account.passport_id }}</p>
+    <p><strong>Баланс:</strong> {{ account.balance }} TJS</p>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Выйти</button>
+    </form> <br>
+    
+    <a href="{% url 'card_create' %}">
+        <button>Создать новую карту</button>
+    </a> <br>
+
+    {% if request.user.cards.all %}
+        <ul>
+            {% for card in request.user.cards.all %}
+                <li>
+                    <strong>Тип:</strong> {{ card.type }} | 
+                    <strong>Номер:</strong> {{ card.card_number }} |      
+                    <strong>Money:</strong> {{ card.balance }} |  
+                    <a href="{% url 'card_detail' card.id %}"><button type="button">Card Details</button></a> |
+                    <!-- Кнопка истории для конкретной карты -->
+                    <a href="{% url 'card_history' card.id %}"><button type="button">View Card History</button></a>    
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас пока нет карт.</p>
+    {% endif %}
+
+    <a href="{% url 'transfer' %}"><button type="submit">Make a Transfer</button></a><br>
+    <a href="{% url 'history' %}"><button type="submit">View All Transaction History</button></a><br>
+</body>
+</html> {% endcomment %}

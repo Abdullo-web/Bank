@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История транзакций | Apex Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bank: {
+                            dark: '#0A192F',
+                            card: '#112240',
+                            accent: '#10B981',
+                            gold: '#D4AF37',
+                            border: '#233554'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bank-dark text-slate-100 min-h-screen flex flex-col justify-between font-sans selection:bg-bank-accent selection:text-white">
+
+    <header class="w-full py-4 px-6 border-b border-bank-border/50 flex justify-between items-center bg-bank-dark/80 backdrop-blur-md">
+        <div class="flex items-center space-x-2">
+            <svg class="w-7 h-7 text-bank-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span class="font-bold tracking-wider text-lg text-white">APEX <span class="text-bank-accent font-light">BANK</span></span>
+        </div>
+        <div class="flex items-center space-x-1 text-xs text-slate-400 bg-bank-card px-3 py-1.5 rounded-full border border-bank-border">
+            <span class="w-2 h-2 rounded-full bg-bank-accent animate-pulse"></span>
+            <span>Безопасное соединение</span>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8 space-y-6">
+        
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-bank-card border border-bank-border rounded-2xl p-6 shadow-xl relative overflow-hidden gap-4">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-bank-accent via-teal-400 to-blue-500"></div>
+            
+            <div>
+                {% if card %}
+                    <h1 class="text-2xl font-bold text-white tracking-tight">История по карте</h1>
+                    <p class="text-xs text-slate-400 mt-1 font-mono">Номер: {{ card.card_number }}</p>
+                {% else %}
+                    <h1 class="text-2xl font-bold text-white tracking-tight">История транзакций</h1>
+                    <p class="text-xs text-slate-400 mt-1">Все финансовые операции по вашему счёту</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center space-x-2 bg-slate-900/80 p-1.5 rounded-xl border border-bank-border">
+                {% if card %}
+                    <a href="{% url 'card_history' card.id %}?filter=all" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-bank-border transition-all">Все</a>
+                    <a href="{% url 'card_history' card.id %}?filter=sent" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-bank-border transition-all">Исходящие</a>
+                    <a href="{% url 'card_history' card.id %}?filter=received" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-bank-border transition-all">Входящие</a>
+                {% else %}
+                    <a href="{% url 'history' %}?filter=all" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-bank-border transition-all">Все</a>
+                    <a href="{% url 'history' %}?filter=sent" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-bank-border transition-all">Исходящие</a>
+                    <a href="{% url 'history' %}?filter=received" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-bank-border transition-all">Входящие</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="bg-bank-card border border-bank-border rounded-2xl p-6 shadow-xl space-y-4">
+            {% if transactions %}
+                <div class="divide-y divide-bank-border/60">
+                    {% for tx in transactions %}
+                        <div class="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-slate-900 border border-bank-border flex items-center justify-center text-bank-accent flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-semibold text-white">Транзакция #{{ tx.id }}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400">От: <span class="text-slate-300">{{ tx.sender.username }}</span> &rarr; Кому: <span class="text-slate-300">{{ tx.receiver.username|default:"N/A" }}</span></p>
+                                    <p class="text-[10px] text-slate-500 font-mono">{{ tx.created_at }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-base font-bold text-bank-accent">-{{ tx.amount }} TJS</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12 text-slate-400 bg-slate-900/40 rounded-xl border border-dashed border-bank-border">
+                    <p class="text-sm">Транзакции не найдены.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <a href="{% url 'account' %}" class="inline-block text-xs text-slate-400 hover:text-bank-accent transition-colors">
+                &larr; Назад в личный кабинет
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-bank-border/30">
+        &copy; 2026 Apex Bank Systems. Все права защищены.
+    </footer>
+
+</body>
+</html>
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction History</title>
+</head>
+<body>
+
+    {% if card %}
+        <h1>History for Card: {{ card.card_number }}</h1>
+    {% else %}
+        <h1>Transaction History</h1>
+    {% endif %}
+
+    <!-- Фильтры: All, Sent, Received -->
+    {% if card %}
+        <!-- Если мы смотрим историю конкретной карты, сохраняем ID карты в ссылках -->
+        <a href="{% url 'card_history' card.id %}?filter=all">All</a> | 
+        <a href="{% url 'card_history' card.id %}?filter=sent">Sent</a> | 
+        <a href="{% url 'card_history' card.id %}?filter=received">Received</a>
+    {% else %}
+        <!-- Общая история транзакций -->
+        <a href="{% url 'history' %}?filter=all">All</a> | 
+        <a href="{% url 'history' %}?filter=sent">Sent</a> | 
+        <a href="{% url 'history' %}?filter=received">Received</a>
+    {% endif %}
+    
+    <br><br>
+    <hr>
+    <br>
+
+    <!-- Вывод списка транзакций -->
+    {% for tx in transactions %}
+        ID: {{ tx.id }}<br>
+        Sender: {{ tx.sender.username }}<br>
+        Receiver: {{ tx.receiver.username|default:"N/A" }}<br>
+        Amount: {{ tx.amount }}<br>
+        Date: {{ tx.created_at }}<br>
+        <br>
+    {% empty %}
+        No transactions found.<br>
+    {% endfor %}
+
+    <br>
+    <a href="{% url 'account' %}">Back to Account</a>
+
+</body>
+</html> {% endcomment %}
