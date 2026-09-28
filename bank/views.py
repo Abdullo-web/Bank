@@ -155,7 +155,7 @@ def transfer_view(request):
                 form.add_error(None, 'Ukajiye poluchatelya Telefon ili Kartu')
                 return render(request,'transfer.html',{'form':form})
 
-            # Проверяем, не пытается ли пользователь перевести на тот же самый счет или карту
+   
             if from_account and receiver_account and from_account == receiver_account:
                 form.add_error(None, 'Nelzya perevodit na tot je samiy schot')
                 return render(request, 'transfer.html', {'form': form})
