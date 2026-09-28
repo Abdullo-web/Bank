@@ -231,7 +231,7 @@ def transaction_history_view(request, card_id=None):
 
             sent_list = list(Transaction.objects.filter(from_card=target_card))
             received_list = list(Transaction.objects.filter(to_card=target_card))
-            # Объединяем списки и удаляем возможные дубликаты через set, затем сортируем
+
             combined = list(set(sent_list + received_list))
             transactions = sorted(combined, key=lambda x: x.id, reverse=True)
             
